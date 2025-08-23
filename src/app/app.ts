@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { interval, tap, filter, Subscription, Subject, takeUntil } from 'rxjs';
 
-const WORKOUT_ACTION_DURATION = 4; // 30 second duration per action
-const WORKOUT_REST_DURATION = 15; // 15 second rest duration
+const WORKOUT_ACTION_DURATION = 30; // 30 second duration per action
+const WORKOUT_REST_DURATION = 10; // 10 second rest duration
 const WORKOUT_STOPPED = 0; // needs user interaction
 enum ACTION_TYPE {
   ACTIVE='ACTIVE',
@@ -14,7 +14,7 @@ enum ACTION_TYPE {
 };
 
 const PAUSE_WORKOUT_ACTION: WorkoutAction = {
-  name: 'Break', timer: WORKOUT_REST_DURATION, type: ACTION_TYPE.BREAK,
+  name: 'Get ready', timer: WORKOUT_REST_DURATION, type: ACTION_TYPE.BREAK,
 }
 const ACTIVE_WORKOUT_ACTION: WorkoutAction = {
   name: 'Action',
@@ -48,6 +48,7 @@ export class App {
   private readonly tick = signal(0);
   private readonly workoutActions: WorkoutAction[] = [
     { name: 'Start', timer: WORKOUT_STOPPED, type: ACTION_TYPE.START },
+    PAUSE_WORKOUT_ACTION,
     { ...ACTIVE_WORKOUT_ACTION, name: 'Jumping Jacks' },
     PAUSE_WORKOUT_ACTION,
     { ...ACTIVE_WORKOUT_ACTION,  name: 'Push Ups' },
@@ -83,8 +84,8 @@ export class App {
   }
 
   public startNextAction(): void {
-    this.intervalTimerSubscription?.unsubscribe();
     this.currentActionIndex.update(value => (value + 1) % this.workoutActions.length);
+    this.isPaused.set(false);
     if (this.currentAction().timer > 0) {
       this.runIntervalTimer();
     }
@@ -109,7 +110,7 @@ export class App {
 
   public reset(): void {
     this.isPaused.set(false);
-    this.timerRanOut.next();
+    this.intervalTimerSubscription?.unsubscribe();
     this.currentActionIndex.set(0);
   }
 

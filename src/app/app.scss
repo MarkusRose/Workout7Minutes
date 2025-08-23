@@ -1,0 +1,29 @@
+:host {
+  text-align: center;
+
+  .timer {
+    padding: 1rem;
+    font-size: 10rem;
+  }
+
+  .btn {
+    display: block;
+    width: 15rem;
+    border: none;
+    background: #0a4;
+    padding: 1.5rem;
+    margin: 2rem auto;
+    color: black;
+    font-size: 1.2rem;
+  }
+
+  .btn-alert {
+    background: #902;
+    color: white;
+  }
+
+  .action {
+    font-weigth: bolder;
+    font-size: 2rem;
+  }
+}

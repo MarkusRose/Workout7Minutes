@@ -1,11 +1,10 @@
 <h1>{{ title }}</h1>
 
-<div>{{ currentAction().name }}</div>
+<div class="action">{{ currentAction().name }}</div>
 
-<div>{{ displayTimer() }}</div>
+<div class="timer">{{ displayTimer() }}</div>
 
-<div>Next up: {{ nextAction().name }}</div>
-<button (click)="startNextAction()">{{ currentAction().type === 'START' ? 'Start' : currentAction().type === 'FINISH' ? 'Finish' : 'Skip' }}</button>
-<button (click)="pauseToggle()">{{ isPaused() ? 'Continue' : 'Pause' }}</button>
-<button *ngIf="isPaused()" (click)="reset()">Reset</button>
-
+<button (click)="startNextAction()" class="btn">{{ currentAction().type === 'START' ? 'Start' : currentAction().type === 'FINISH' ? 'Finish' : 'Skip' }}</button>
+<button *ngIf="currentAction().type === 'ACTIVE' || currentAction().type === 'BREAK'" (click)="pauseToggle()" class="btn">{{ isPaused() ? 'Continue' : 'Pause' }}</button>
+<button *ngIf="isPaused()" (click)="reset()" class="btn btn-alert">Reset</button>
+<div *ngIf="currentAction().type === 'BREAK'"><div>Next up:</div><div class="action">{{ nextAction().name }}</div></div>
