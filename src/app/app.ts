@@ -1,7 +1,7 @@
-import { Component, signal, computed, effect } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { interval, tap, filter, Subscription, Subject, takeUntil } from 'rxjs';
+import { WorkoutSessionService } from '../services/workout-session.service';
 
 const WORKOUT_ACTION_DURATION = 30; // 30 second duration per action
 const WORKOUT_REST_DURATION = 10; // 10 second rest duration
@@ -41,7 +41,6 @@ export class App {
     return value;
   });
 
-  private actionStartTime: Date;
   private intervalTimerSubscription: Subscription | undefined;
 
   private readonly timerRanOut = new Subject<void>();
@@ -69,9 +68,8 @@ export class App {
   private readonly soundChime = new Audio();
   private readonly currentActionIndex = signal(0);
 
-  constructor() {
-    this.actionStartTime = new Date();
-  }
+  private readonly workoutSessionService = inject(WorkoutSessionService);
+
 
   public ngOnInit(): void {
     this.timerRanOut.asObservable().pipe(tap(() => {
@@ -81,6 +79,8 @@ export class App {
 
     this.soundChime.src = './chime-sound.mp3';
     this.soundChime.load();
+
+    this.workoutSessionService.readSessionFromFile('workout1.json').pipe(tap(session => console.log(session))).subscribe();
   }
 
   public startNextAction(): void {
