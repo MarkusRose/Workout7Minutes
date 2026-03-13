@@ -3,7 +3,6 @@ import { appConfig } from './app/app.config';
 import { App } from './app/app';
 import { isDevMode } from '@angular/core';
 
-console.log(isDevMode())
+console.log(isDevMode());
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(App, appConfig).catch((err) => console.error(err));

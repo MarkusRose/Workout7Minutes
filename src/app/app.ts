@@ -1,39 +1,32 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { interval, tap, filter, Subscription, Subject, takeUntil } from 'rxjs';
-import { WorkoutSessionService } from '../services/workout-session.service';
-
-const WORKOUT_ACTION_DURATION = 30; // 30 second duration per action
-const WORKOUT_REST_DURATION = 10; // 10 second rest duration
-const WORKOUT_STOPPED = 0; // needs user interaction
-enum ACTION_TYPE {
-  ACTIVE='ACTIVE',
-  BREAK='BREAK',
-  START='START',
-  FINISH='FINISH',
-};
-
-const PAUSE_WORKOUT_ACTION: WorkoutAction = {
-  name: 'Get ready', timer: WORKOUT_REST_DURATION, type: ACTION_TYPE.BREAK,
-}
-const ACTIVE_WORKOUT_ACTION: WorkoutAction = {
-  name: 'Action',
-  timer: WORKOUT_ACTION_DURATION,
-  type: ACTION_TYPE.ACTIVE,
-}
+import { interval, tap, filter, Subscription, Subject, takeUntil, map } from 'rxjs';
+import {
+  WorkoutSessionService,
+  WorkoutAction,
+  WorkoutSession,
+  ACTION_TYPE,
+  EMPTY_ACTION,
+} from '../services/workout-session.service';
 
 @Component({
   selector: 'app-root',
   imports: [CommonModule],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
-  protected readonly isPaused = signal(false);
-  protected readonly title = '7 Minute Workout';
-  protected readonly currentAction = computed(() => this.workoutActions[this.currentActionIndex()]);
-  protected readonly nextAction = computed(() => this.setNextAction());
-  protected readonly displayTimer = computed(() => {
+  private readonly workoutSessionService = inject(WorkoutSessionService);
+  public readonly isPaused = signal(false);
+  public readonly title = '7 Minute Workout';
+  public readonly currentAction = computed(() =>
+    this.workoutActions()?.length > 0
+      ? this.workoutActions()?.[this.currentActionIndex()]
+      : EMPTY_ACTION,
+  );
+  public readonly nextAction = computed(() => this.setNextAction());
+  public readonly displayTimer = computed(() => {
     const value = this.currentAction().timer - this.tick();
     if (value < 0) {
       return 0;
@@ -43,48 +36,38 @@ export class App {
 
   private intervalTimerSubscription: Subscription | undefined;
 
+  private workoutActions = toSignal(this.workoutSessionService.currentWorkout$.pipe(
+    filter((workout): workout is WorkoutSession => !!workout),
+    map((workoutSession) => {
+      return workoutSession.workout ?? [EMPTY_ACTION];
+    })
+  ), { initialValue: [EMPTY_ACTION] });
   private readonly timerRanOut = new Subject<void>();
   private readonly tick = signal(0);
-  private readonly workoutActions: WorkoutAction[] = [
-    { name: 'Start', timer: WORKOUT_STOPPED, type: ACTION_TYPE.START },
-    PAUSE_WORKOUT_ACTION,
-    { ...ACTIVE_WORKOUT_ACTION, name: 'Jumping Jacks' },
-    PAUSE_WORKOUT_ACTION,
-    { ...ACTIVE_WORKOUT_ACTION,  name: 'Push Ups' },
-    PAUSE_WORKOUT_ACTION,
-    { ...ACTIVE_WORKOUT_ACTION,  name:  'Wall Sit' },
-    PAUSE_WORKOUT_ACTION,
-    { ...ACTIVE_WORKOUT_ACTION,  name: 'Lunges' },
-    PAUSE_WORKOUT_ACTION,
-    { ...ACTIVE_WORKOUT_ACTION,  name: 'Chair Dips' },
-    PAUSE_WORKOUT_ACTION,
-    { ...ACTIVE_WORKOUT_ACTION,  name: 'Plank' },
-    PAUSE_WORKOUT_ACTION,
-    { ...ACTIVE_WORKOUT_ACTION,  name: 'Burpees' },
-    PAUSE_WORKOUT_ACTION,
-    { ...ACTIVE_WORKOUT_ACTION,  name: 'Push Up with Rotation' },
-    { name: 'Complete!', timer: WORKOUT_STOPPED, type: ACTION_TYPE.FINISH },
-  ];
   private readonly soundChime = new Audio();
   private readonly currentActionIndex = signal(0);
 
-  private readonly workoutSessionService = inject(WorkoutSessionService);
-
 
   public ngOnInit(): void {
-    this.timerRanOut.asObservable().pipe(tap(() => {
-      this.startNextAction();
-      this.soundChime.play();
-    })).subscribe();
+    this.timerRanOut
+      .asObservable()
+      .pipe(
+        tap(() => {
+          this.startNextAction();
+          this.soundChime.play();
+        }),
+      )
+      .subscribe();
 
     this.soundChime.src = './chime-sound.mp3';
     this.soundChime.load();
-
-    this.workoutSessionService.readSessionFromFile('workout1.json').pipe(tap(session => console.log(session))).subscribe();
   }
 
   public startNextAction(): void {
-    this.currentActionIndex.update(value => (value + 1) % this.workoutActions.length);
+    if (this.workoutActions().length === 0) {
+      return;
+    }
+    this.currentActionIndex.update((value) => (value + 1) % this.workoutActions().length);
     this.isPaused.set(false);
     if (this.currentAction().timer > 0) {
       this.runIntervalTimer();
@@ -92,16 +75,15 @@ export class App {
   }
 
   private setNextAction(): WorkoutAction {
-    return this.workoutActions[this.getNextActionIndex(this.currentActionIndex())];
+    return this.workoutActions()[this.getNextActionIndex(this.currentActionIndex())];
   }
 
-
   private getNextActionIndex(index: number): number {
-    const nextAction = this.workoutActions[(index + 1) % this.workoutActions.length]
+    const nextAction = this.workoutActions()[(index + 1) % this.workoutActions().length];
     if (nextAction.type === ACTION_TYPE.BREAK) {
       return this.getNextActionIndex(index + 1);
     }
-    return (index + 1) % this.workoutActions.length;
+    return (index + 1) % this.workoutActions().length;
   }
 
   public pauseToggle(): void {
@@ -117,22 +99,17 @@ export class App {
   private runIntervalTimer(): void {
     this.intervalTimerSubscription?.unsubscribe();
     this.tick.set(0);
-    this.intervalTimerSubscription = interval(1000).pipe(
-      filter(() => !this.isPaused()),
-      tap(() => {
-        this.tick.update((value) => value + 1);
-        if (this.currentAction().timer > 0 && this.tick() > this.currentAction().timer) {
-          this.timerRanOut.next();
-        }
-      }),
-      takeUntil(this.timerRanOut.asObservable())
-    ).subscribe();
+    this.intervalTimerSubscription = interval(1000)
+      .pipe(
+        filter(() => !this.isPaused()),
+        tap(() => {
+          this.tick.update((value) => value + 1);
+          if (this.currentAction().timer > 0 && this.tick() > this.currentAction().timer) {
+            this.timerRanOut.next();
+          }
+        }),
+        takeUntil(this.timerRanOut.asObservable()),
+      )
+      .subscribe();
   }
 }
-
-interface WorkoutAction {
-  name: string;
-  timer: number;
-  type: ACTION_TYPE;
-}
-
