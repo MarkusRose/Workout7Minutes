@@ -63,6 +63,7 @@ export class App {
 
     this.soundChime.src = './chime-sound.mp3';
     this.soundChime.load();
+    this.workoutSessionService.loadWorkout();
   }
 
   public startNextAction(): void {
