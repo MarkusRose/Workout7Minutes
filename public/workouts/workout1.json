@@ -1,3 +1,16 @@
 {
-  "workout": ["First Exercise", "Second Exercise", "Third Exercise"]
+  "workout": [
+    "Jumping jacks",
+    "Wall sit",
+    "Push-ups",
+    "Abdominal chrunches",
+    "Step-up onto chair",
+    "Squats",
+    "Triceps dips",
+    "Plank",
+    "High knees",
+    "Lunges",
+    "Push-ups with rotation",
+    "Side-plank"
+  ]
 }

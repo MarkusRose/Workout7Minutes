@@ -12,7 +12,7 @@ export class WorkoutSessionService {
   private readonly http = inject(HttpClient);
 
   constructor() {
-    this.currentWorkout$ = this.getWorkoutSessions();
+    this.currentWorkout$ = this.getWorkoutSession();
   }
 
   private readSessionFromFile(filename: string): Observable<WorkoutSessionJson> {
@@ -20,11 +20,12 @@ export class WorkoutSessionService {
     return this.http.get<WorkoutSessionJson>(fileUrl);
   }
 
-  private getWorkoutSessions(): Observable<WorkoutSession> {
+  private getWorkoutSession(): Observable<WorkoutSession> {
     return this.readSessionFromFile('workout1.json').pipe(
       map((session) => {
         const outSession: WorkoutAction[] = [];
         outSession.push({ action: 'START', timer: WORKOUT_STOPPED, type: ACTION_TYPE.START });
+        outSession.push({ action: 'GET READY!', timer: WORKOUT_REST_DURATION, type: ACTION_TYPE.BREAK })
         session.workout.forEach((action, i) => {
           outSession.push({ action, timer: WORKOUT_ACTION_DURATION, type: ACTION_TYPE.ACTIVE });
           i < session.workout.length - 1 &&

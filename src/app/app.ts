@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { interval, tap, filter, Subscription, Subject, takeUntil, map } from 'rxjs';
@@ -36,17 +36,19 @@ export class App {
 
   private intervalTimerSubscription: Subscription | undefined;
 
-  private workoutActions = toSignal(this.workoutSessionService.currentWorkout$.pipe(
-    filter((workout): workout is WorkoutSession => !!workout),
-    map((workoutSession) => {
-      return workoutSession.workout ?? [EMPTY_ACTION];
-    })
-  ), { initialValue: [EMPTY_ACTION] });
+  private workoutActions = toSignal(
+    this.workoutSessionService.currentWorkout$.pipe(
+      filter((workout): workout is WorkoutSession => !!workout),
+      map((workoutSession) => {
+        return workoutSession.workout ?? [EMPTY_ACTION];
+      }),
+    ),
+    { initialValue: [EMPTY_ACTION] },
+  );
   private readonly timerRanOut = new Subject<void>();
   private readonly tick = signal(0);
   private readonly soundChime = new Audio();
   private readonly currentActionIndex = signal(0);
-
 
   public ngOnInit(): void {
     this.timerRanOut
