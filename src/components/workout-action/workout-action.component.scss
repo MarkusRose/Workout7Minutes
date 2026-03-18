@@ -1,0 +1,42 @@
+:host {
+  text-align: center;
+
+  .timer {
+    padding: 1rem;
+    font-size: 10rem;
+  }
+
+  .btn {
+    display: block;
+    width: 15rem;
+    border: none;
+    background: #0a4;
+    padding: 1.5rem;
+    margin: 2rem auto;
+    color: black;
+    font-size: 1.2rem;
+    cursor: pointer;
+    &:hover {
+      background: #0b4;
+    }
+    &:active {
+      background: #094;
+    }
+  }
+
+  .btn-alert {
+    background: #902;
+    color: white;
+    &:hover {
+      background: #a02;
+    }
+    &:active {
+      background: #802;
+    }
+  }
+
+  .action {
+    font-weight: bolder;
+    font-size: 2rem;
+  }
+}

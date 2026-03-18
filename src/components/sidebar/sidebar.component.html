@@ -1,0 +1,10 @@
+<ul>
+  @for (item of modes; track item.name) {
+    <li><button (click)="redirectTo(item.route)">{{ item.icon }} {{ item.name }}</button></li>
+  }
+</ul>
+<ul>
+  @for (item of menuItems; track item.name) {
+    <li>{{ item.icon }} {{ item.name }}</li>
+  }
+</ul>

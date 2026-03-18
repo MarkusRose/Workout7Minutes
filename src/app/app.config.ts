@@ -27,5 +27,6 @@ export const appConfig: ApplicationConfig = {
     provideStore(),
     provideState({ name: 'workout', reducer: workoutReducer }),
     provideEffects(WorkoutEffects),
+    provideRouter(routes),
   ],
 };
