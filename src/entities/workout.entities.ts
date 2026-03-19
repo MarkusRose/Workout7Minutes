@@ -1,12 +1,17 @@
 const WORKOUT_STOPPED = 0; // needs user interaction
 
-export type WorkoutSessionJson = {
+export interface WorkoutSessionJson extends WorkoutProperties {
   workout: string[];
 };
 
-export type WorkoutSession = {
+export interface WorkoutSession extends WorkoutProperties {
   workout: WorkoutAction[];
 };
+
+export type WorkoutProperties = {
+  name: string;
+  icon: string;
+}
 
 export interface WorkoutAction {
   action: string;

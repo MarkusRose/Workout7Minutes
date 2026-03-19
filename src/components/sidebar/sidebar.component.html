@@ -4,7 +4,7 @@
   }
 </ul>
 <ul>
-  @for (item of menuItems; track item.name) {
-    <li>{{ item.icon }} {{ item.name }}</li>
+  @for (workout of workoutList(); track workout.name) {
+    <li (click)="chooseWorkout(workout.name)">{{ workout.icon }} {{ workout.name }}</li>
   }
 </ul>

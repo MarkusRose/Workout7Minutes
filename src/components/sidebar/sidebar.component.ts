@@ -1,6 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
+import { WorkoutSessionService } from "../../services/workout-session.service";
+import { tap } from "rxjs";
 
 @Component({
   selector: 'workout-sidebar',
@@ -10,7 +13,11 @@ import { Router } from "@angular/router";
   imports: [CommonModule],
 })
 export class SidebarComponent {
-  private readonly router = inject(Router)
+  private readonly router = inject(Router);
+  private readonly workoutService = inject(WorkoutSessionService);
+  public readonly workoutList = toSignal(this.workoutService.workoutList$.pipe(tap((list) => console.log(list))));
+
+
   public modes: ModeItem[] = [
     {
       name: 'Work out',
@@ -23,23 +30,13 @@ export class SidebarComponent {
       route: 'session',
     },
   ]
-  public menuItems: MenuItem[] = [
-    {
-      name: 'Workout 1',
-      icon: '💪',
-    },
-    {
-      name: 'Workout 2',
-      icon: '🧘',
-    },
-    {
-      name: 'Workout 3',
-      icon: '🚴',
-    },
-  ];
 
   public redirectTo(route: string): void {
     this.router.navigateByUrl(`/${route}`);
+  }
+
+  public chooseWorkout(name: string): void {
+    this.workoutService.chooseWorkout(name);
   }
 }
 

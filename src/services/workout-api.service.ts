@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 export class WorkoutApiService {
   private readonly http = inject(HttpClient);
 
-  public loadWorkout(): Observable<WorkoutSessionJson> {
-    const fileUrl = `workouts/workout1.json`;
+  public loadWorkout(fileName: string): Observable<WorkoutSessionJson> {
+    const fileUrl = `workouts/${fileName}.json`;
     return this.http.get<WorkoutSessionJson>(fileUrl);
   }
 }

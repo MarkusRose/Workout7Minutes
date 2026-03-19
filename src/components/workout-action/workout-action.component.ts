@@ -38,15 +38,18 @@ export class WorkoutActionComponent {
 
   private intervalTimerSubscription: Subscription | undefined;
 
-  private workoutActions = toSignal(
+  private workoutSession = toSignal(
     this.workoutSessionService.currentWorkout$.pipe(
       filter((workout): workout is WorkoutSession => !!workout),
       map((workoutSession) => {
-        return workoutSession.workout ?? [EMPTY_ACTION];
+        return workoutSession;
       }),
     ),
-    { initialValue: [EMPTY_ACTION] },
+    { initialValue: { workout: [EMPTY_ACTION], name: '', icon: '' } },
   );
+  private workoutActions = computed(() => this.workoutSession().workout ?? [EMPTY_ACTION]);
+  public workoutName = computed(() => this.workoutSession().name);
+
   private readonly timerRanOut = new Subject<void>();
   private readonly tick = signal(0);
   private readonly soundChime = new Audio();
@@ -65,7 +68,6 @@ export class WorkoutActionComponent {
 
     this.soundChime.src = './chime-sound.mp3';
     this.soundChime.load();
-    this.workoutSessionService.loadWorkout();
   }
 
   public startNextAction(): void {

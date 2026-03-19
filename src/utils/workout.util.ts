@@ -12,7 +12,7 @@ export function getWorkoutSessionFromJson(session: WorkoutSessionJson): WorkoutS
   const WORKOUT_STOPPED = 0; // needs user interaction
 
   if (session.workout.length === 0) {
-    return { workout: [EMPTY_ACTION] };
+    return { workout: [EMPTY_ACTION], name: "Empty Workout", icon: "" };
   }
 
   const outSession: WorkoutAction[] = [];
@@ -24,5 +24,5 @@ export function getWorkoutSessionFromJson(session: WorkoutSessionJson): WorkoutS
       outSession.push({ action, timer: WORKOUT_REST_DURATION, type: ACTION_TYPE.BREAK });
   });
   outSession.push({ action: 'COMPLETE', timer: WORKOUT_STOPPED, type: ACTION_TYPE.FINISH });
-  return { workout: outSession };
+  return { workout: outSession, name: session.name, icon: session.icon };
 }

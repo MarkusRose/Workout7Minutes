@@ -10,6 +10,4 @@ import { RouterModule } from '@angular/router';
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-  public readonly title = '7 Minute Workout';
-}
+export class App { }

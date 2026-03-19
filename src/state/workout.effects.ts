@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { WorkoutActions } from './workout.actions';
-import { exhaustMap, map } from 'rxjs';
+import { concatMap, map } from 'rxjs';
 import { WorkoutApiService } from '../services/workout-api.service';
 
 @Injectable()
@@ -12,9 +12,9 @@ export class WorkoutEffects {
   loadWorkoutSession$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(WorkoutActions.loadWorkoutSession),
-      exhaustMap(() =>
+      concatMap(({ name }) =>
         this.workoutApi
-          .loadWorkout()
+          .loadWorkout(name)
           .pipe(map((workout) => WorkoutActions.addWorkoutSession({ workout }))),
       ),
     );
