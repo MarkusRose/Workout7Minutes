@@ -37,6 +37,10 @@ export class WorkoutActionComponent {
   });
 
   private intervalTimerSubscription: Subscription | undefined;
+  private readonly timerRanOut = new Subject<void>();
+  private readonly tick = signal(0);
+  private readonly soundChime = new Audio();
+  private readonly currentActionIndex = signal(0);
 
   private workoutSession = toSignal(
     this.workoutSessionService.currentWorkout$.pipe(
@@ -44,16 +48,12 @@ export class WorkoutActionComponent {
       map((workoutSession) => {
         return workoutSession;
       }),
+      tap(() => this.reset()),
     ),
     { initialValue: { workout: [EMPTY_ACTION], name: '', icon: '' } },
   );
   private workoutActions = computed(() => this.workoutSession().workout ?? [EMPTY_ACTION]);
   public workoutName = computed(() => this.workoutSession().name);
-
-  private readonly timerRanOut = new Subject<void>();
-  private readonly tick = signal(0);
-  private readonly soundChime = new Audio();
-  private readonly currentActionIndex = signal(0);
 
   public ngOnInit(): void {
     this.timerRanOut

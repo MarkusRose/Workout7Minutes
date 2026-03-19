@@ -1,2 +1,8 @@
-<h2> Edit session </h2>
-<div> Coming soon! </div>
+<h2>Edit session: {{ currentSession()?.name }}</h2>
+<div>
+  <ol>
+    @for (step of currentSession()?.workout; track $index) {
+      <li>{{ step }}</li>
+    }
+  </ol>
+</div>
