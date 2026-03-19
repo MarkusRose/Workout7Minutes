@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { WorkoutSessionJson } from './workout-session.service';
+import { WorkoutSessionJson } from '../entities/workout.entities';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })

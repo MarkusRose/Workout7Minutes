@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { WorkoutSessionJson } from '../services/workout-session.service';
+import { WorkoutSessionJson } from '../entities/workout.entities';
 
 export const WorkoutActions = createActionGroup({
   source: '[WorkoutSession]',

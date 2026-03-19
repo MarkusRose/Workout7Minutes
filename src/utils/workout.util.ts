@@ -4,7 +4,7 @@ import {
   WorkoutSessionJson,
   ACTION_TYPE,
   EMPTY_ACTION,
-} from '../services/workout-session.service';
+} from '../entities/workout.entities';
 
 export function getWorkoutSessionFromJson(session: WorkoutSessionJson): WorkoutSession {
   const WORKOUT_ACTION_DURATION = 30; // 30 second duration per action

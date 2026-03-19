@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { WorkoutState } from './workout.reducer';
-import { WorkoutSession } from '../services/workout-session.service';
+import { WorkoutSession } from '../entities/workout.entities';
 import { getWorkoutSessionFromJson } from '../utils/workout.util';
 
 const selectFeature = createFeatureSelector<WorkoutState>('workout');

@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { WorkoutSessionJson } from '../services/workout-session.service';
+import { WorkoutSessionJson } from '../entities/workout.entities';
 import { WorkoutActions } from './workout.actions';
 
 export interface WorkoutState {

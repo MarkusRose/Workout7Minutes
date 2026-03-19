@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { interval, tap, filter, Subscription, Subject, takeUntil, map } from 'rxjs';
 import {
   WorkoutSessionService,
+} from '../../services/workout-session.service';
+import {
   WorkoutAction,
   WorkoutSession,
   ACTION_TYPE,
   EMPTY_ACTION,
-} from '../../services/workout-session.service';
+} from '../../entities/workout.entities';
 
 @Component({
   selector: 'workout-action',
