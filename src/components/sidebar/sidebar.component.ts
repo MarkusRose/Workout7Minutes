@@ -1,9 +1,9 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { WorkoutSessionService } from "../../services/workout-session.service";
-import { tap } from "rxjs";
+import { tap, map } from "rxjs";
 
 @Component({
   selector: 'workout-sidebar',
@@ -13,12 +13,7 @@ import { tap } from "rxjs";
   imports: [CommonModule],
 })
 export class SidebarComponent {
-  private readonly router = inject(Router);
-  private readonly workoutService = inject(WorkoutSessionService);
-  public readonly workoutList = toSignal(this.workoutService.workoutList$.pipe(tap((list) => console.log(list))));
-
-
-  public modes: ModeItem[] = [
+  public readonly modes: ModeItem[] = [
     {
       name: 'Work out',
       icon: '▶️',
@@ -29,10 +24,18 @@ export class SidebarComponent {
       icon: '🖋️',
       route: 'session',
     },
-  ]
+  ] as const;
 
-  public redirectTo(route: string): void {
-    this.router.navigateByUrl(`/${route}`);
+  private readonly router = inject(Router);
+  private readonly workoutService = inject(WorkoutSessionService);
+  public readonly workoutList = toSignal(this.workoutService.workoutList$.pipe(tap((list) => console.log(list))));
+  public readonly selectedWorkoutName = toSignal(this.workoutService.currentWorkout$.pipe(map((workout) => workout.name)));
+  public readonly activeModeName = signal(this.modes[0].name)
+
+
+  public redirectTo(mode: ModeItem): void {
+    this.activeModeName.set(mode.name)
+    this.router.navigateByUrl(`/${mode.route}`);
   }
 
   public chooseWorkout(name: string): void {
@@ -45,7 +48,4 @@ interface ModeItem {
   icon: string;
   route: string;
 }
-interface MenuItem {
-  name: string;
-  icon: string;
-}
+

@@ -1,0 +1,29 @@
+:host {
+  ul {
+    list-style-type: none;
+
+    li {
+      border: 1px solid lightgrey;
+      border-radius: 0.4rem;
+      margin: 0.5rem 0;
+      padding: 0.5rem 0.7rem;
+      min-width: 7rem;
+    }
+  }
+
+  .session-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .view-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .active {
+    background: #333;
+    border: 3px solid purple !important;
+  }
+
+}

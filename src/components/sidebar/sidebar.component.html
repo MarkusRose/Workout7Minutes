@@ -1,10 +1,10 @@
-<ul>
-  @for (item of modes; track item.name) {
-    <li><button (click)="redirectTo(item.route)">{{ item.icon }} {{ item.name }}</button></li>
+<ul class="view-list">
+  @for (mode of modes; track mode.name) {
+    <li [class]="{'active': mode.name===activeModeName() }" (click)="redirectTo(mode)">{{ mode.icon }} {{ mode.name }}</li>
   }
 </ul>
-<ul>
+<ul class="session-list">
   @for (workout of workoutList(); track workout.name) {
-    <li (click)="chooseWorkout(workout.name)">{{ workout.icon }} {{ workout.name }}</li>
+    <li [class]="{'active': workout.name===selectedWorkoutName()}" (click)="chooseWorkout(workout.name)">{{ workout.icon }} {{ workout.name }}</li>
   }
 </ul>

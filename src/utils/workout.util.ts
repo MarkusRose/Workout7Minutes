@@ -7,8 +7,8 @@ import {
 } from '../entities/workout.entities';
 
 export function getWorkoutSessionFromJson(session: WorkoutSessionJson): WorkoutSession {
-  const WORKOUT_ACTION_DURATION = 30; // 30 second duration per action
-  const WORKOUT_REST_DURATION = 10; // 10 second rest duration
+  const WORKOUT_ACTION_DURATION = session.durations?.active ?? 30; // 30 second duration per action
+  const WORKOUT_REST_DURATION = session.durations?.pause ?? 10; // 10 second rest duration
   const WORKOUT_STOPPED = 0; // needs user interaction
 
   if (session.workout.length === 0) {
@@ -26,3 +26,4 @@ export function getWorkoutSessionFromJson(session: WorkoutSessionJson): WorkoutS
   outSession.push({ action: 'COMPLETE', timer: WORKOUT_STOPPED, type: ACTION_TYPE.FINISH });
   return { workout: outSession, name: session.name, icon: session.icon };
 }
+

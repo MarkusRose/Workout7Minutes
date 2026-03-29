@@ -1,6 +1,10 @@
 {
   "name": "Yoga",
   "icon": "🪷",
+  "durations": {
+    "action": "30",
+    "pause": "10"
+  },
   "workout": [
     "Crossleged Seat",
     "Tabletop",
@@ -13,3 +17,4 @@
     "Down Dog"
   ]
 }
+

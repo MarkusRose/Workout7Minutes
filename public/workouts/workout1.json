@@ -1,6 +1,10 @@
 {
   "name": "7 Minute",
   "icon": "🕖",
+  "durations": {
+    "action": "30",
+    "pause": "10"
+  },
   "workout": [
     "Jumping jacks",
     "Wall sit",
@@ -16,3 +20,4 @@
     "Side-plank"
   ]
 }
+

@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { WorkoutState } from './workout.reducer';
-import { WorkoutSessionJson, WorkoutSession, WorkoutProperties } from '../entities/workout.entities';
+import { WorkoutSessionJson, WorkoutSession, WorkoutProperties, EMPTY_WORKOUT_SESSION } from '../entities/workout.entities';
 import { getWorkoutSessionFromJson } from '../utils/workout.util';
 
 const selectFeature = createFeatureSelector<WorkoutState>('workout');
@@ -16,7 +16,7 @@ export const selectActiveWorkoutSteps = createSelector(
   (state: WorkoutState): WorkoutSessionJson =>
     state.activeWorkout >= 0 && state.workouts.length > 0
       ? state.workouts[state.activeWorkout]
-      : { workout: [], name: '', icon: '' },
+      : EMPTY_WORKOUT_SESSION,
 );
 
 export const selectActiveWorkout = createSelector(
@@ -25,6 +25,6 @@ export const selectActiveWorkout = createSelector(
     getWorkoutSessionFromJson(
       state.activeWorkout >= 0 && state.workouts.length > 0
         ? state.workouts[state.activeWorkout]
-        : { workout: [], name: '', icon: '' },
+        : EMPTY_WORKOUT_SESSION,
     ),
 );
