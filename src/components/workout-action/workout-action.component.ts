@@ -1,10 +1,8 @@
 import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+
 import { interval, tap, filter, Subscription, Subject, takeUntil, map } from 'rxjs';
-import {
-  WorkoutSessionService,
-} from '../../services/workout-session.service';
+import { WorkoutSessionService } from '../../services/workout-session.service';
 import {
   WorkoutAction,
   WorkoutSession,
@@ -14,7 +12,7 @@ import {
 
 @Component({
   selector: 'workout-action',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './workout-action.component.html',
   styleUrl: './workout-action.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
